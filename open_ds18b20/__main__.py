@@ -1,16 +1,24 @@
 import sys
 import re
+import getpass
 import file, mail, probe
 
 config = file.ConfigFile("./config.json")
 files = []
-probes = probe.Probe()
+settings = {"email":"","password":"","done":False}
+prompt = '> '
 
 def writeDependencies(file):
 	print "before continuing you should add \"w1-gpio\" and \"w1-therm\" to /etc/modules files"
 	return False
 
 def promptConfig():
+	print("adress where emails are going to be send and sent from ? ")
+	settings["email"] = raw_input(prompt)
+	print("password ? (warning the password will be kept clear in the config file)")
+	settings["password"]= getpass.getpass()
+	settings["done"]=True
+	config.register(settings)
 	return
 
 def modulesTester():
@@ -31,6 +39,10 @@ def main():
 	tester = modulesTester()
 	if tester == False:
 		return
+	config.readData()
+	if config.is_done() != True:
+		promptConfig()
+	probes = probe.Probe()
 	probes.detectProbe()
 	for p in range(len(probes.listprobes)):
 		files.append(file.ProbeFile(probes.listprobes[p]))
@@ -43,6 +55,7 @@ def main():
 	email.sendMail()
 	for i in range(len(files)):
 		files[i].closeFile()
+	config.closeFile()
 	return
 
 if __name__ == '__main__':

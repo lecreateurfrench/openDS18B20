@@ -18,13 +18,32 @@ class ConfigFile(File):
 	
 	def __init__(self, filepath):
 	 	super(ConfigFile, self).__init__(filepath)
-	 	self.data = json.load(self.file)
+	 	self.file = open(self.path,"r")
+		
+	def readData(self):
+		self.data = json.load(self.file)
 
 	def getCredentials(self):
 	 	email = self.data["email"]
 	 	password = self.data["password"]
 	 	return email, password
 
+	def is_done(self):
+		if self.data["done"]== True:
+			return True
+		else:
+			return False
+
+	def register(self, settings):
+		element = json.dumps(settings, indent=4)
+		self._save(element)
+		
+	def _save(self, element):
+		self.file = open(self.path, "w")
+		self.file.write(element)
+		self.file.close()
+		self.file = open(self.path, "r")
+	
 	def closeFile(self):
 	 	super(ConfigFile, self).closeFile()
 
