@@ -1,5 +1,5 @@
 #!/usr/bin/python
-from opend18b20 import file
+from openDS18B20 import file
 import re
 import os
 
@@ -12,11 +12,11 @@ class Probe():
 		return
 
 
-	def getTemperature(self, line, i):
+	def getTemperature(self, line):
 		regexp = r"^\d+$"
 		temp = re.match(regexp, line).groups[0]
 		temp = list(temp)
-		self.temperatures.append(temp[0]+temp[1]+","+temp[2]+"C")
+		self.temperatures.append(temp[0]+temp[1]+","+temp[2]+"*C")
 			#self.temperatures[key] = file.readline(probes[key].as_string() + "/w1_slave")
 
 		return
@@ -26,7 +26,7 @@ class Probe():
 		num = 0
 		for directory in os.listdir(path):
 			if re.match(regexp, directory):
-				self.probes["probe " + num.as_string()] = directory
+				self.probes["probe " + num.as_string()] = directory + "/w1_slave"
 				self.temperatures["probe " + num.as_string()] = ""
 				num += 1
 		return probes
