@@ -12,7 +12,7 @@ class Mail():
 		self.body = ""
 		return 
 
-	def sendMail(self,smtp_server="smtp.gmail.com", port=587):
+	def sendMail(self, smtp_server="smtp.gmail.com", port=587):
 		self.msg.attach(MIMEText(self.body,'plain'))
 		text = self.msg.as_string()
 		server=smtplib.SMTP(smtp_server,port)
@@ -22,15 +22,11 @@ class Mail():
 		server.quit()
 		return
 
-	#def getCredentials(self,credentials):
-	#	self.credentials["email"] = credentials[0]
-	#	self.credentials["password"] = credential[1]
-	#	return self.credentials
 
 	def messageBody(self,temperatures):
-		self.body = "Voici la listes des temperatures\n"
+		self.body = "here is the list of the mesured temperatures\n"
 		for i in range(len(temperatures)):
-			self.body += "sonde " + str(i) + " : " + temperatures[i] + "*C\n"
+			self.body += "probe " + str(i) + " : " + temperatures[i] + "*C\n"
 		return self.body
 
 	def messageBuilder(self, toaddr, fromaddr, subject):
