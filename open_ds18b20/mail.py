@@ -4,7 +4,7 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-class Email():
+class Mail():
 
 	def __init__(self):
 		self.credentials = { "email": "", "password": ""}
@@ -12,7 +12,7 @@ class Email():
 		self.body = ""
 		return 
 
-	def sendmail(self,smtp_server="smtp.gmail.com", port=587):
+	def sendMail(self,smtp_server="smtp.gmail.com", port=587):
 		self.msg.attach(MIMEText(self.body,'plain'))
 		text = self.msg.as_string()
 		server=smtplib.SMTP(smtp_server,port)
@@ -33,7 +33,7 @@ class Email():
 			self.body += "sonde " + i + " : " + temperatures[i] + "*C\n"
 		return self.body
 
-	def messagebuilder(self, toaddr, fromaddr, subject):
+	def messageBuilder(self, toaddr, fromaddr, subject):
 		self.msg["From"] = fromaddr
 		self.msg["To"] = toaddr
 		self.msg["Subject"] = subject

@@ -9,15 +9,15 @@ probes = probe.Probe()
 
 def main():
 	probes.detectProbe()
-	for p in range(len(probe.listprobes)):
+	for p in range(len(probes.listprobes)):
 		files.append(file.ProbeFile(listprobes))
 		templine = files[p].readline(2)
 		probes.getTemperatures(templine)
-	mail = mail.Mail()
-	mail.messageBody(probes.temperatures)
-	mail.credentials["email"], mail.credentials["password"] = config.getCredentials()
-	mail.messageBuilder(mail.credentials["email"], mail.credentials["email"], mail.body)
-	mail.sendMail()
+	email = mail.Mail()
+	email.messageBody(probes.temperatures)
+	email.credentials["email"], email.credentials["password"] = config.getCredentials()
+	email.messageBuilder(email.credentials["email"], email.credentials["email"], email.body)
+	email.sendMail()
 	return
 
 if __name__ == '__main__':
