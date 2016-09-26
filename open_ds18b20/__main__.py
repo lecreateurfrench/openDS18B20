@@ -7,21 +7,26 @@ import subprocess
 import file, mail, probe
 
 
+
+FILES = []
+SETTINGS = {"email":"","password":"","done":False}
+PROMPT = '> '
+
 def initialConfig():
 	try: 
 		path = os.path.abspath("/home/pi/ds18b20_conf")
 		CONFIG = file.ConfigFile(path + "/config.json")
 	except IOError:
-		print "creation du fichier config.json"
-		os.makedirs(path)
+		print "creating config.json in " + path
+		try:
+			os.makedirs(path)
+		except OSError:
+			print "already existing folder"
 		subprocess.Popen(["touch", path + "/config.json"])
 		time.sleep(1) #leaves enough time for the subprocess to create the file
 		CONFIG = file.ConfigFile(path + "/config.json")
 	return CONFIG
-
-FILES = []
-SETTINGS = {"email":"","password":"","done":False}
-PROMPT = '> '
+	
 CONFIG = initialConfig()
 
 def writeDependencies(file):
