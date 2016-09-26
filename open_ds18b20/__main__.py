@@ -10,7 +10,7 @@ try:
 except IOError:
 	print "creation du fichier config.json"
 	subprocess.Popen(["touch", "config.json"])
-	time.sleep(1) #leave enough time for the subprocess to create the file
+	time.sleep(1) #leaves enough time for the subprocess to create the file
 	config = file.ConfigFile("./config.json")
 
 files = []
