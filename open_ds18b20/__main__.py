@@ -1,23 +1,36 @@
 import sys
+import re
 import file, mail, probe
-import subprocess 
 
 config = file.ConfigFile("./config.json")
 files = []
 probes = probe.Probe()
 
-def writeDependencies():
-	file = file.File("/etc/modules")
-	file.writeLine("w1-gpio")
-	file.writeLine("w1-therm")
-	subprocess.Popen(["sudo", "modprobe", "w1-gpio"])
-	subprocess.Popen(["sudo", "modprobe", "w1-therm"])		
-	
+def writeDependencies(file):
+	print "before continuing you should add \"w1-gpio\" and \"w1-therm\" to /etc/modules files"
+	return False
 
 def promptConfig():
+	return
 
+def modulesTester():
+	flag = [False, False]
+	modules = file.ModuleFile("/etc/modules")
+	for i in range(modules.nbline):
+		line = modules.readLine(i+1)
+		if re.match(r"^w1-gpio", line):
+			flag[0] = True
+		if re.match(r"^w1-therm", line):
+			flag[1] = True
+	if flag != [True, True]:
+		return writeDependencies(modules)
 
+	
+	
 def main():
+	tester = modulesTester()
+	if tester == False:
+		return
 	probes.detectProbe()
 	for p in range(len(probes.listprobes)):
 		files.append(file.ProbeFile(probes.listprobes[p]))
@@ -28,7 +41,7 @@ def main():
 	email.credentials["email"], email.credentials["password"] = config.getCredentials()
 	email.messageBuilder(email.credentials["email"], email.credentials["email"], email.body)
 	email.sendMail()
-	for i range(len(files)):
+	for i in range(len(files)):
 		files[i].closeFile()
 	return
 
