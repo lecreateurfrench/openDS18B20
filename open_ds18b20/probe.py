@@ -17,7 +17,6 @@ class Probe():
 		temp = re.search(regexp, line).group(0)
 		temp = list(temp)
 		self.temperatures.append(temp[0]+temp[1]+","+temp[2])
-			#self.temperatures[key] = file.readline(probes[key].as_string() + "/w1_slave")
 		return self.temperatures
 
 	def detectProbe(self):
