@@ -6,8 +6,8 @@ import os
 class Probe():
 
 	def __init__(self):
-		self.probes = {}
-		self.temperatures = {}
+		self.listprobes = []
+		self.temperatures = []
 		self.path = os.path.abspath("/sys/bus/w1/devices")
 		return
 
@@ -16,17 +16,13 @@ class Probe():
 		regexp = r"^\d+$"
 		temp = re.match(regexp, line).groups[0]
 		temp = list(temp)
-		self.temperatures.append(temp[0]+temp[1]+","+temp[2]+"*C")
+		self.temperatures.append(temp[0]+temp[1]+","+temp[2])
 			#self.temperatures[key] = file.readline(probes[key].as_string() + "/w1_slave")
-
-		return
+		return self.temperatures
 
 	def detectProbe(self):
 		regexp = r"^28"
-		num = 0
 		for directory in os.listdir(path):
 			if re.match(regexp, directory):
-				self.probes["probe " + num.as_string()] = directory + "/w1_slave"
-				self.temperatures["probe " + num.as_string()] = ""
-				num += 1
-		return probes
+				self.listprobes.append(directory + "/w1_slave")
+		return self.listprobes
