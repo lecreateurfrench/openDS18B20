@@ -68,7 +68,7 @@ def main():
 		email = mail.Mail()
 		email.messageBody(probes.temperatures)
 		email.credentials["email"], email.credentials["password"] = config.getCredentials()
-		email.messageBuilder(email.credentials["email"], email.credentials["email"], email.body)
+		email.messageBuilder(email.credentials["email"], email.credentials["email"], "list of temperatures")
 		email.sendMail()
 	except:
 		print "mail couldn't be send : ", sys.exc_info()[0]
