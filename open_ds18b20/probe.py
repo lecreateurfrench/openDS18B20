@@ -22,7 +22,7 @@ class Probe():
 
 	def detectProbe(self):
 		regexp = r"^28"
-		for directory in os.listdir(path):
+		for directory in os.listdir(self.path):
 			if re.match(regexp, directory):
 				self.listprobes.append(directory + "/w1_slave")
 		return self.listprobes
