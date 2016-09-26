@@ -1,5 +1,5 @@
 #!/usr/bin/python
-from openDS18B20 import file
+import file
 import re
 import os
 

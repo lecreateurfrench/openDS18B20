@@ -1,8 +1,8 @@
 #!/usr/bin/python
 
 import smtplib
-from email.MIMEMultipart import MIMEMultipart
-from email.MIMEText import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 class Email():
 
@@ -28,7 +28,7 @@ class Email():
 	#	return self.credentials
 
 	def messageBody(self,temperatures):
-		self.body = "Voici la listes des températures\n"
+		self.body = "Voici la listes des temperatures\n"
 		for i in range(len(temperatures)):
 			self.body += "sonde " + i + " : " + temperatures[i] + "*C\n"
 		return self.body

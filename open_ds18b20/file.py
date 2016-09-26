@@ -10,13 +10,15 @@ class File():
 		return
 
 	def getContent(self):
-		return(self.content = list(self.file))
+		self.content = list(self.file)
+		return self.content
 
 	def nbLine(self):
-		return(self.nbline = len(self.content))
+		self.nbline = len(self.content)
+		return self.nbline
 
 
-	def readLine(self, nbline)
+	def readLine(self, nbline):
 		return self.contenu[nbline-1]
 
 	def closeFile(self):
@@ -29,12 +31,12 @@ class ConfigFile(File):
 	 	super.__init__(self, path)
 	 	self.data = json.load(self.file)
 
-	 def getCredentials(self):
+	def getCredentials(self):
 	 	email = self.data["email"]
 	 	password = self.data["password"]
 	 	return email, password
 
-	 def closeFile(self):
+	def closeFile(self):
 	 	super.closeFile(self)
 
 
@@ -51,7 +53,7 @@ class ProbeFile(File):
 		return super.nbLine(self)
 
 
-	def readLine(self, nbline)
+	def readLine(self, nbline):
 		return super.readLine(self, nbline)
 
 	def closeFile(self):

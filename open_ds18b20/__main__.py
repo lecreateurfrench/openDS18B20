@@ -1,5 +1,5 @@
 import sys
-from openDS18b20 import file, email, probe
+import file, mail, probe
 
 config = file.FileConfig("config.json")
 files = []
@@ -20,7 +20,7 @@ def main():
 	mail.sendMail()
 	return
 
-if __name__ == '__main__'
+if __name__ == '__main__':
 	sys.exit(main())
 
 
