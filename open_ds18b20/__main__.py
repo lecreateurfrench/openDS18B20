@@ -9,12 +9,14 @@ import file, mail, probe
 
 def initialConfig():
 	try: 
-		CONFIG = file.ConfigFile("./config.json")
+		path = os.path.abspath("/home/pi/ds18b20_conf")
+		CONFIG = file.ConfigFile(path + "/config.json")
 	except IOError:
 		print "creation du fichier config.json"
-		subprocess.Popen(["touch", "config.json"])
+		os.makedirs(path)
+		subprocess.Popen(["touch", path + "/config.json"])
 		time.sleep(1) #leaves enough time for the subprocess to create the file
-		CONFIG = file.ConfigFile("./config.json")
+		CONFIG = file.ConfigFile(path + "/config.json")
 	return CONFIG
 
 FILES = []
@@ -55,7 +57,7 @@ def main():
 		return
 	if len(sys.argv) > 1:
 		if str(sys.argv[1]) == "erase":
-			os.remove("./config.json")
+			os.remove("/home/pi/ds18b20_conf/config.json")
 			initialConfig()
 			promptConfig()
 			CONFIG.readData()
