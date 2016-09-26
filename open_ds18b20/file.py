@@ -5,19 +5,11 @@ import re
 
 class File(object):
 
-	#__metaclass__ = ABCMeta
 
-	#@abstractmethod
 	def __init__(self, filepath):
 		self.path = filepath
-		self.file = open(self.path,"r")
+		self.file = open(self.path,"a+")
 
-
-#	@abstractmethod
-	def readLine(self, nbline):
-		return self.content[nbline-1]
-	
-#	@abstractmethod
 	def closeFile(self):
 		self.file.close()
 
@@ -46,7 +38,7 @@ class ProbeFile(File):
 		self.nbline = len(self.content)
 
 	def readLine(self, nbline):
-		return super(ProbeFile, self).readLine(nbline)
+		return self.content[nbline-1]
 
 	def closeFile(self):
 		super(ProbeFile, self).closeFile()

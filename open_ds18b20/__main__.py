@@ -1,10 +1,20 @@
 import sys
 import file, mail, probe
+import subprocess 
 
 config = file.ConfigFile("./config.json")
 files = []
 probes = probe.Probe()
 
+def writeDependencies():
+	file = file.File("/etc/modules")
+	file.writeLine("w1-gpio")
+	file.writeLine("w1-therm")
+	subprocess.Popen(["sudo", "modprobe", "w1-gpio"])
+	subprocess.Popen(["sudo", "modprobe", "w1-therm"])		
+	
+
+def promptConfig():
 
 
 def main():
@@ -18,6 +28,8 @@ def main():
 	email.credentials["email"], email.credentials["password"] = config.getCredentials()
 	email.messageBuilder(email.credentials["email"], email.credentials["email"], email.body)
 	email.sendMail()
+	for i range(len(files)):
+		files[i].closeFile()
 	return
 
 if __name__ == '__main__':
