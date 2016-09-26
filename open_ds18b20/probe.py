@@ -13,8 +13,8 @@ class Probe():
 
 
 	def getTemperature(self, line):
-		regexp = r"^\d+$"
-		temp = re.match(regexp, line).groups[0]
+		regexp = r"\d+$"
+		temp = re.search(regexp, line).group(0)
 		temp = list(temp)
 		self.temperatures.append(temp[0]+temp[1]+","+temp[2])
 			#self.temperatures[key] = file.readline(probes[key].as_string() + "/w1_slave")
@@ -24,5 +24,5 @@ class Probe():
 		regexp = r"^28"
 		for directory in os.listdir(self.path):
 			if re.match(regexp, directory):
-				self.listprobes.append(directory + "/w1_slave")
+				self.listprobes.append(self.path+'/'+directory + "/w1_slave")
 		return self.listprobes

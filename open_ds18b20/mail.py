@@ -30,7 +30,7 @@ class Mail():
 	def messageBody(self,temperatures):
 		self.body = "Voici la listes des temperatures\n"
 		for i in range(len(temperatures)):
-			self.body += "sonde " + i + " : " + temperatures[i] + "*C\n"
+			self.body += "sonde " + str(i) + " : " + temperatures[i] + "*C\n"
 		return self.body
 
 	def messageBuilder(self, toaddr, fromaddr, subject):

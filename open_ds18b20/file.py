@@ -11,22 +11,11 @@ class File(object):
 	def __init__(self, filepath):
 		self.path = filepath
 		self.file = open(self.path,"r")
-		return
-
-#	@abstractmethod
-	def getContent(self):
-		self.content = list(self.file)
-		return self.content
-
-#	@abstractmethod
-	def nbLine(self):
-		self.nbline = len(self.content)
-		return self.nbline
 
 
 #	@abstractmethod
 	def readLine(self, nbline):
-		return self.contenu[nbline-1]
+		return self.content[nbline-1]
 	
 #	@abstractmethod
 	def closeFile(self):
@@ -53,13 +42,8 @@ class ProbeFile(File):
 
 	def __init__(self, filepath):
 		super(ProbeFile, self).__init__(filepath)
-
-	def getContent(self):
-		return super(ProbeFile, self).getContent()
-
-	def nbLine(self):
-		return super(ProbeFile, self).nbLine()
-
+		self.content = list(self.file)
+		self.nbline = len(self.content)
 
 	def readLine(self, nbline):
 		return super(ProbeFile, self).readLine(nbline)
