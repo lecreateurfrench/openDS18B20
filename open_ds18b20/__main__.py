@@ -1,9 +1,18 @@
 import sys
 import re
 import getpass
+import time
+import subprocess
 import file, mail, probe
 
-config = file.ConfigFile("./config.json")
+try: 
+	config = file.ConfigFile("./config.json")
+except IOError:
+	print "creation du fichier config.json"
+	subprocess.Popen(["touch", "config.json"])
+	time.sleep(1) #leave enough time for the subprocess to create the file
+	config = file.ConfigFile("./config.json")
+
 files = []
 settings = {"email":"","password":"","done":False}
 prompt = '> '
@@ -39,9 +48,13 @@ def main():
 	tester = modulesTester()
 	if tester == False:
 		return
-	config.readData()
-	if config.is_done() != True:
+	if config.nbline > 0: 
+		config.readData()
+		if config.is_done() == False:
+			promptConfig()
+	else:
 		promptConfig()
+		config.readData()
 	probes = probe.Probe()
 	probes.detectProbe()
 	for p in range(len(probes.listprobes)):

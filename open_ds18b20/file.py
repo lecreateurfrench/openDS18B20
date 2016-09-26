@@ -9,6 +9,8 @@ class File(object):
 	def __init__(self, filepath):
 		self.path = filepath
 		self.file = open(self.path,"r")
+		self.content = list(self.file)
+		self.nbline = len(self.content)
 
 	def closeFile(self):
 		self.file.close()
@@ -18,9 +20,9 @@ class ConfigFile(File):
 	
 	def __init__(self, filepath):
 	 	super(ConfigFile, self).__init__(filepath)
-	 	self.file = open(self.path,"r")
-		
+
 	def readData(self):
+		self.file.seek(0)
 		self.data = json.load(self.file)
 
 	def getCredentials(self):
@@ -53,8 +55,6 @@ class ProbeFile(File):
 
 	def __init__(self, filepath):
 		super(ProbeFile, self).__init__(filepath)
-		self.content = list(self.file)
-		self.nbline = len(self.content)
 
 	def readLine(self, nbline):
 		return self.content[nbline-1]
@@ -65,8 +65,6 @@ class ProbeFile(File):
 class ModuleFile(File):
 	def __init__(self, filepath):
 		super(ModuleFile, self).__init__(filepath)
-		self.content = list(self.file)
-		self.nbline = len(self.content)
 
 	def readLine(self, nbline):
 		return self.content[nbline-1]
