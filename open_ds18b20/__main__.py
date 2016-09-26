@@ -57,15 +57,21 @@ def main():
 		config.readData()
 	probes = probe.Probe()
 	probes.detectProbe()
-	for p in range(len(probes.listprobes)):
-		files.append(file.ProbeFile(probes.listprobes[p]))
-		templine = files[p].readLine(2)
-		probes.getTemperature(templine)
-	email = mail.Mail()
-	email.messageBody(probes.temperatures)
-	email.credentials["email"], email.credentials["password"] = config.getCredentials()
-	email.messageBuilder(email.credentials["email"], email.credentials["email"], email.body)
-	email.sendMail()
+	try: 
+		for p in range(len(probes.listprobes)):
+			files.append(file.ProbeFile(probes.listprobes[p]))
+			templine = files[p].readLine(2)
+			probes.getTemperature(templine)
+	except:
+		print "temperatures couldn't be read : ", sys.exc_info()[0]
+	try:
+		email = mail.Mail()
+		email.messageBody(probes.temperatures)
+		email.credentials["email"], email.credentials["password"] = config.getCredentials()
+		email.messageBuilder(email.credentials["email"], email.credentials["email"], email.body)
+		email.sendMail()
+	except:
+		print "mail couldn't be send : ", sys.exc_info()[0]
 	for i in range(len(files)):
 		files[i].closeFile()
 	config.closeFile()
