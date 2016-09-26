@@ -2,7 +2,7 @@ I am working on this project to help people with the automation of the task of r
 
 How to use OpenDS18B20 ?
 
-This program run under pyhton 2.7
+This program runs under pyhton 2.7
 
 Before anything you should create a random gmail adress used only for the purpose of this sofware where you enable som low security usage to allow python to send email from this specific adress you just created (you can easily find how to do this by googling it ;)
 
