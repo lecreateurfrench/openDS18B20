@@ -30,11 +30,17 @@ class ConfigFile(File):
 	 	password = self.data["password"]
 	 	return email, password
 
-	def is_done(self):
-		if self.data["done"]== True:
+	def has_alert(self):
+		if self.data["alert"]["choice"] == True:
 			return True
 		else:
 			return False
+
+	def getMaxTempAlert(self):
+		return float(self.data["alert"]["max"])
+
+	def getMinTempAlert(self):
+		return float(self.data["alert"]["min"])
 
 	def register(self, settings):
 		element = json.dumps(settings, indent=4)

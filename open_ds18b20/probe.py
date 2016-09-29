@@ -2,6 +2,7 @@
 import file
 import re
 import os
+import Adafruit_DHT as dht
 
 class Probe():
 
@@ -16,7 +17,7 @@ class Probe():
 		regexp = r"\d+$"
 		temp = re.search(regexp, line).group(0)
 		temp = list(temp)
-		self.temperatures.append(temp[0]+temp[1]+","+temp[2])
+		self.temperatures.append(temp[0]+temp[1]+"."+temp[2])
 		return self.temperatures
 
 	def detectProbe(self):

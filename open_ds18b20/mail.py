@@ -23,10 +23,13 @@ class Mail():
 		return
 
 
-	def messageBody(self,temperatures):
-		self.body = "Here is the list of the mesured temperatures\n"
+	def messageBody(self,temperatures, alert=False):
+		if alert == True:
+			self.body = "An alert has been detected, you should check your temperatures\n"
+		else:
+			self.body = "Here is the list of the mesured temperatures\n"
 		for i in range(len(temperatures)):
-			self.body += "probe " + str(i) + " : " + temperatures[i] + "*C\n"
+			self.body += "probe " + str(i+1) + " : " + temperatures[i] + "*C\n"
 		return self.body
 
 	def messageBuilder(self, toaddr, fromaddr, subject):
