@@ -50,7 +50,7 @@ def promptConfig():
 	alert = raw_input(PROMPT)
 	if str(alert) == "y": 
 		SETTINGS["alert"]["choice"] = True
-		print("max temp ?)")
+		print("max temp ?")
 		SETTINGS["alert"]["max"] = int(raw_input(PROMPT))
 		print("min temp ?")
 		SETTINGS["alert"]["min"] = int(raw_input(PROMPT))
@@ -69,7 +69,12 @@ def modulesTester():
 	if flag != [True, True]:
 		return writeDependencies(modules)
 
-	
+def createMail(probes, subject, alert = False):
+	email = mail.Mail()
+	email.messageBody(probes.temperatures, alert)
+	email.credentials["email"], email.credentials["password"] = CONFIG.getCredentials()
+	email.messageBuilder(email.credentials["email"], email.credentials["email"], subject)
+	email.sendMail()
 	
 def main():
 	tester = modulesTester()
@@ -86,34 +91,33 @@ def main():
 	CONFIG.readData()
 	probes = probe.Probe()
 	probes.detectProbe()
-	dht_t, dht_h = dht.read_retry(dht.DHT22,17)
+	dht_h, dht_t = dht.read_retry(dht.DHT22,17)
 	try:		
 		for p in range(len(probes.listprobes)):
 			FILES.append(file.ProbeFile(probes.listprobes[p]))
 			templine = FILES[p].readLine(2)
 			probes.getTemperature(templine)
-		
-		email = mail.Mail()
+	except:
+		print "temperatures couldn't be read : ", sys.exc_info()[0]
+	try:	
+		mailsent = False
 		floater = to_float(probes.temperatures)
 		if CONFIG.has_alert():
 			if max(floater) >= CONFIG.getMaxTempAlert() or min(floater) <= CONFIG.getMinTempAlert():
-				email.messageBody(probes.temperatures, True)
-		else:		
-			email.messageBody(probes.temperatures)
-		probes.temperatures.append(str(dht_t))
-		probes.temperatures.append(str(dht_h))
-	except:
-		print "temperatures couldn't be read : ", sys.exc_info()[0]
-	try:
-		email.credentials["email"], email.credentials["password"] = CONFIG.getCredentials()
-		email.messageBuilder(email.credentials["email"], email.credentials["email"], "list of temperatures")
-		email.sendMail()
+				subject = "Alert detected"
+				createMail(probes, subject, True)
+				mailsent = True		
+		if len(sys.argv) >= 2 and mailsent == False:
+			if str(sys.argv[1]) == "mail":
+				subject = "list of temperatures"
+				createMail(probes, subject)
+		
 	except:
 		print "mail couldn't be send : ", sys.exc_info()[0]
 	for i in range(len(FILES)):
 		FILES[i].closeFile()
 	CONFIG.closeFile()
-	return
+	return (probes.temperatures)
 
 if __name__ == '__main__':
 	sys.exit(main())
