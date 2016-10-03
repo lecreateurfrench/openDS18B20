@@ -4,12 +4,11 @@ import re
 import getpass
 import time
 import subprocess
-import Adafruit_DHT as dht
+#import Adafruit_DHT as dht
 import file, mail, probe
 
 
 
-FILES = []
 SETTINGS = {"email":"","password":"","alert":{"choice": False, "max":0, "min":0}}
 PROMPT = '> '
 
@@ -21,9 +20,10 @@ def to_float(array):
 	return floater
 
 def initialConfig():
+	path = "/home/pi/ds18b20_conf"
 	try: 
-		path = os.path.abspath("/home/pi/ds18b20_conf")
-		CONFIG = file.ConfigFile(path + "/config.json")
+		os.path.abspath(path)
+		config = file.ConfigFile(path + "/config.json")
 	except IOError:
 		print "creating config.json in " + path
 		try:
@@ -32,16 +32,15 @@ def initialConfig():
 			print "already existing folder"
 		subprocess.Popen(["touch", path + "/config.json"])
 		time.sleep(1) #leaves enough time for the subprocess to create the file
-		CONFIG = file.ConfigFile(path + "/config.json")
-	return CONFIG
+		config = file.ConfigFile(path + "/config.json")
+	return config
 	
-CONFIG = initialConfig()
 
 def writeDependencies(file):
 	print "before continuing you should add \"w1-gpio\" and \"w1-therm\" to /etc/modules files"
 	return False
 
-def promptConfig():
+def promptConfig(config):
 	print("adress where emails are going to be send and sent from ? ")
 	SETTINGS["email"] = raw_input(PROMPT)
 	print("password ? (warning the password will be kept clear in the config file)")
@@ -54,7 +53,7 @@ def promptConfig():
 		SETTINGS["alert"]["max"] = int(raw_input(PROMPT))
 		print("min temp ?")
 		SETTINGS["alert"]["min"] = int(raw_input(PROMPT))
-	CONFIG.register(SETTINGS)
+	config.register(SETTINGS)
 	return 
 
 def modulesTester():
@@ -69,10 +68,10 @@ def modulesTester():
 	if flag != [True, True]:
 		return writeDependencies(modules)
 
-def createMail(probes, subject, alert = False):
+def createMail(probes, subject, config, alert=False):
 	email = mail.Mail()
 	email.messageBody(probes.temperatures, alert)
-	email.credentials["email"], email.credentials["password"] = CONFIG.getCredentials()
+	email.credentials["email"], email.credentials["password"] = config.getCredentials()
 	email.messageBuilder(email.credentials["email"], email.credentials["email"], subject)
 	email.sendMail()
 	
@@ -80,43 +79,45 @@ def main():
 	tester = modulesTester()
 	if tester == False:
 		return
+	files = []
+	config = initialConfig()
 	if len(sys.argv) > 1:
 		if str(sys.argv[1]) == "erase":
 			os.remove("/home/pi/ds18b20_conf/config.json")
-			initialConfig()
-			promptConfig()
-			CONFIG.readData()
-	elif CONFIG.nbline ==  0:
-		promptConfig()
-	CONFIG.readData()
+			config = initialConfig()
+			promptConfig(config)
+			config.readData()
+	elif config.nbline ==  0:
+		promptConfig(config)
+	config.readData()
 	probes = probe.Probe()
 	probes.detectProbe()
-	dht_h, dht_t = dht.read_retry(dht.DHT22,17)
+#	dht_h, dht_t = dht.read_retry(dht.DHT22,17)
 	try:		
 		for p in range(len(probes.listprobes)):
-			FILES.append(file.ProbeFile(probes.listprobes[p]))
-			templine = FILES[p].readLine(2)
+			files.append(file.ProbeFile(probes.listprobes[p]))
+			templine = files[p].readLine(2)
 			probes.getTemperature(templine)
 	except:
-		print "temperatures couldn't be read : ", sys.exc_info()[0]
+		print "temperatures couldn't be read : ", sys.exc_info()[:2]
 	try:	
 		mailsent = False
 		floater = to_float(probes.temperatures)
-		if CONFIG.has_alert():
-			if max(floater) >= CONFIG.getMaxTempAlert() or min(floater) <= CONFIG.getMinTempAlert():
+		if config.has_alert():
+			if max(floater) >= config.getMaxTempAlert() or min(floater) <= config.getMinTempAlert():
 				subject = "Alert detected"
-				createMail(probes, subject, True)
+				createMail(probes, subject, config, True)
 				mailsent = True		
 		if len(sys.argv) >= 2 and mailsent == False:
 			if str(sys.argv[1]) == "mail":
 				subject = "list of temperatures"
-				createMail(probes, subject)
+				createMail(probes, subject, config)
 		
 	except:
-		print "mail couldn't be send : ", sys.exc_info()[0]
-	for i in range(len(FILES)):
-		FILES[i].closeFile()
-	CONFIG.closeFile()
+		print "mail couldn't be send : ", sys.exc_info()
+	for i in range(len(files)):
+		files[i].closeFile()
+	config.closeFile()
 	return (probes.temperatures)
 
 if __name__ == '__main__':
